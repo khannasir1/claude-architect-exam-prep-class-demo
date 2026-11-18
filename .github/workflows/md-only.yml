@@ -1,0 +1,24 @@
+name: Markdown only
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  check-md-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Fail if any file is not Markdown
+        run: |
+          bad=$(git ls-files | grep -v -E '\.md$|^\.gitignore$|^\.github/workflows/')
+          if [ -n "$bad" ]; then
+            echo "These files are not Markdown (.md):"
+            echo "$bad"
+            exit 1
+          fi
+          echo "All files are Markdown. Good."
